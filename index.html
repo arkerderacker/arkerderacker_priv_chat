@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Arkerderacker Chat</title>
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Arkerderacker Chat">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+body {
+  margin:0;
+  height:100vh;
+  overflow:hidden;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(135deg,#1e1e2f,#3a3a5f);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+}
+#particles{
+  position:absolute;
+  top:0; left:0;
+  width:100%; height:100%;
+  z-index:0;
+}
+.glass{
+  position:relative;
+  z-index:1;
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(15px);
+  -webkit-backdrop-filter:blur(15px);
+  border-radius:25px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.25);
+  padding:30px;
+  min-width:350px;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:15px;
+}
+input{
+  width:80%;
+  padding:12px 12px 12px 50px;
+  border-radius:12px;
+  border:none;
+  outline:none;
+  background:rgba(255,255,255,0.2);
+  color:#fff;
+  font-size:16px;
+  text-align:left;
+  backdrop-filter:blur(5px);
+  transition:all 0.3s ease;
+}
+input:focus{width:100%;}
+.button-row{display:flex;gap:10px;justify-content:center;width:100%;}
+.glass-btn{
+  position:relative;
+  padding:12px 30px;
+  font-size:16px;
+  font-weight:bold;
+  color:white;
+  border:none;
+  border-radius:25px;
+  cursor:pointer;
+  outline:none;
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.2);
+  box-shadow:0 10px 30px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.3);
+  overflow:hidden;
+  transition:all 0.25s ease;
+  margin:0 5px;
+}
+.glass-btn::before{
+  content:"";
+  position:absolute;
+  top:-50%;
+  left:-50%;
+  width:200%;
+  height:200%;
+  background:linear-gradient(60deg, rgba(255,255,255,0.3), rgba(255,255,255,0));
+  transform:rotate(25deg);
+  pointer-events:none;
+  opacity:0.6;
+  transition:all 0.3s ease;
+}
+.glass-btn:hover{transform:translateY(-3px) scale(1.05);}
+.glass-btn:active{transform:scale(0.92);}
+.water{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:200%;
+  height:200%;
+  background:rgba(255,255,255,0.15);
+  border-radius:40%;
+  transform:translate(-50%,-50%) scale(0);
+  pointer-events:none;
+  animation:ripple 1s ease-out forwards;
+}
+@keyframes ripple{
+  0%{transform:translate(-50%,-50%) scale(0);opacity:0.6;}
+  50%{transform:translate(-50%,-50%) scale(1);opacity:0.4;}
+  100%{transform:translate(-50%,-50%) scale(1.5);opacity:0;}
+}
+#loginForm{transform:translateY(-30px);}
+#chatUI{display:none;flex-direction:column;gap:15px;width:90%;max-width:600px;}
+#onlineBox{background:rgba(255,255,255,0.15);backdrop-filter:blur(15px);border-radius:15px;padding:10px;color:#fff;max-height:150px;overflow-y:auto;}
+#chat{background:rgba(255,255,255,0.1);backdrop-filter:blur(15px);border-radius:15px;padding:10px;height:300px;overflow-y:scroll;color:#fff;width:100%;}
+#message-container{position:relative;width:100%;display:flex;align-items:center;gap:10px;}
+#message{flex:1;padding:12px 12px 12px 60px;border-radius:12px;border:none;outline:none;background:rgba(255,255,255,0.2);color:#fff;font-size:16px;backdrop-filter:blur(5px);transition:all 0.3s ease;}
+#cameraBtn{
+  position:absolute;
+  left:10px;
+  top:50%;
+  transform:translateY(-50%);
+  background:rgba(255,255,255,0.15);
+  border:none;
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+  z-index:2;
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  backdrop-filter:blur(10px);
+}
+#settingsModal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:none;flex-direction:column;align-items:center;padding:20px;background:rgba(255,255,255,0.2);backdrop-filter:blur(25px);border-radius:25px;z-index:10;min-width:300px;}
+#settingsModal input[type=range]{width:80%;}
+#settingsModal button{margin-top:10px;}
+#settingsModal .edit-about{display:none;}
+#aboutText{white-space:pre-line;text-align:center;margin-top:10px;}
+#typingIndicator{font-style:italic;color:#ccc;margin-bottom:5px;}
+img.chat-image{max-width:100%;border-radius:15px;margin:5px 0;}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+
+<div class="glass" id="loginForm">
+  <h2>Login / Register</h2>
+  <input id="usernameInput" placeholder="Username">
+  <input id="passwordInput" type="password" placeholder="Password">
+  <div class="button-row">
+    <button class="glass-btn" id="registerBtn">Register</button>
+    <button class="glass-btn" id="loginBtn">Login</button>
+  </div>
+  <div id="loginMsg"></div>
+</div>
+
+<div class="glass" id="chatUI">
+  <div class="button-row">
+    <button class="glass-btn" id="settingsBtn">Settings ⚙️</button>
+  </div>
+  <div id="onlineBox"><strong>Online Users:</strong><div id="onlineList"></div></div>
+  <div id="userInfo"></div>
+  <div id="typingIndicator"></div>
+  <div id="chat"></div>
+  <div class="chat-buttons" id="message-container">
+    <input id="recipientInput" placeholder="Recipient username">
+    <input id="message" placeholder="Type a message...">
+    <button id="cameraBtn">📷</button>
+    <button class="glass-btn" id="sendBtn">Send</button>
+    <button class="glass-btn" id="logoutBtn">Logout</button>
+  </div>
+</div>
+
+<div class="glass" id="settingsModal">
+  <h3>Settings</h3>
+  <label>Particle Speed:</label>
+  <input type="range" id="speedSlider" min="0.1" max="5" step="0.1" value="1">
+  <button class="glass-btn" id="toggleParticlesBtn">Toggle Particles</button>
+  <div id="aboutText"></div>
+  <button class="glass-btn edit-about" id="editAboutBtn">Edit About</button>
+  <button class="glass-btn" id="closeSettingsBtn">Close</button>
+</div>
+
+<input type="file" id="imageInput" style="display:none;" accept="image/*">
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, push, onValue, get, set, remove, onDisconnect, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getStorage, ref as sref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+const firebaseConfig={apiKey:"AIzaSyD4i1bs9ocomiyvV3RZSdQ8OcgtJwAqINo",authDomain:"arkerderacker-chat.firebaseapp.com",databaseURL:"https://arkerderacker-chat-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"arkerderacker-chat",storageBucket:"arkerderacker-chat.appspot.com",messagingSenderId:"664100165039",appId:"1:664100165039:web:804c5ddf7b7af7dab18b5a",measurementId:"G-3WWDCRL1TY"};
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+const storage=getStorage(app);
+
+const usernameInput=document.getElementById("usernameInput");
+const passwordInput=document.getElementById("passwordInput");
+const registerBtn=document.getElementById("registerBtn");
+const loginBtn=document.getElementById("loginBtn");
+const loginMsg=document.getElementById("loginMsg");
+const loginForm=document.getElementById("loginForm");
+const chatUI=document.getElementById("chatUI");
+const userInfo=document.getElementById("userInfo");
+const chatDiv=document.getElementById("chat");
+const messageInput=document.getElementById("message");
+const recipientInput=document.getElementById("recipientInput");
+const sendBtn=document.getElementById("sendBtn");
+const logoutBtn=document.getElementById("logoutBtn");
+const onlineList=document.getElementById("onlineList");
+const typingIndicator=document.getElementById("typingIndicator");
+const settingsBtn=document.getElementById("settingsBtn");
+const settingsModal=document.getElementById("settingsModal");
+const closeSettingsBtn=document.getElementById("closeSettingsBtn");
+const speedSlider=document.getElementById("speedSlider");
+const toggleParticlesBtn=document.getElementById("toggleParticlesBtn");
+const aboutText=document.getElementById("aboutText");
+const editAboutBtn=document.getElementById("editAboutBtn");
+const cameraBtn=document.getElementById("cameraBtn");
+const imageInput=document.getElementById("imageInput");
+
+let currentUser=null;
+let particlesEnabled=true;
+let particleSpeed=1;
+let currentAbout="Arkerderacker Chat\nVersion 1.0\n© 2026";
+let typingTimeout;
+
+// --- Login/Register ---
+registerBtn.onclick=async()=>{
+  const username=usernameInput.value.trim();
+  const password=passwordInput.value.trim();
+  if(!username||!password){ loginMsg.textContent="Enter username and password!"; return; }
+  const userRef=ref(db,'users/'+username);
+  const snapshot=await get(userRef);
+  if(snapshot.exists()){ loginMsg.textContent="Username already taken!"; return; }
+  await set(userRef,{password});
+  loginMsg.style.color="green"; loginMsg.textContent="Registered!";
+};
+
+loginBtn.onclick=async()=>{
+  const username=usernameInput.value.trim();
+  const password=passwordInput.value.trim();
+  if(!username||!password){ loginMsg.textContent="Enter username and password!"; return; }
+  const userRef=ref(db,'users/'+username);
+  const snapshot=await get(userRef);
+  if(!snapshot.exists()){ loginMsg.textContent="Username does not exist!"; return; }
+  if(password!==snapshot.val().password){ loginMsg.textContent="Incorrect password!"; return; }
+  currentUser=username;
+  localStorage.setItem("currentUser",currentUser);
+  loginForm.style.display="none"; chatUI.style.display="flex";
+  userInfo.textContent=`Logged in as: ${currentUser}`;
+  setOnline();
+  loadOnlineUsers();
+};
+
+// --- Online Users ---
+function setOnline(){
+  const onlineRef=ref(db,'onlineUsers/'+currentUser);
+  set(onlineRef,true);
+  onDisconnect(onlineRef).remove();
+}
+function loadOnlineUsers(){
+  onValue(ref(db,'onlineUsers'),snapshot=>{
+    onlineList.innerHTML="";
+    snapshot.forEach(child=>{
+      if(child.key!==currentUser) onlineList.innerHTML+=`<p>${child.key}</p>`;
+    });
+  });
+}
+
+// --- Logout ---
+logoutBtn.onclick=()=>{
+  if(currentUser) remove(ref(db,'onlineUsers/'+currentUser));
+  currentUser=null; localStorage.removeItem("currentUser");
+  loginForm.style.display="flex"; chatUI.style.display="none";
+  chatDiv.innerHTML=""; recipientInput.value=""; messageInput.value="";
+};
+
+// --- Typing Indicator ---
+messageInput.addEventListener("input",()=>{
+  if(!currentUser || !recipientInput.value.trim()) return;
+  const chatId=[currentUser,recipientInput.value.trim()].sort().join("_");
+  const typingRef=ref(db,'privateChats/'+chatId+'/typing/'+currentUser);
+  set(typingRef,true);
+  clearTimeout(typingTimeout);
+  typingTimeout=setTimeout(()=>remove(typingRef),1000);
+});
+
+// --- Send Message ---
+async function sendMessage(text,imgUrl){
+  const recipient=recipientInput.value.trim();
+  if(!currentUser || !recipient || (!text && !imgUrl)) return;
+  const chatId=[currentUser,recipient].sort().join("_");
+  const msgRef=ref(db,'privateChats/'+chatId+'/messages');
+  await push(msgRef,{sender:currentUser,timestamp:Date.now(),text:text||'',imgUrl:imgUrl||''});
+}
+sendBtn.onclick=()=>{ sendMessage(messageInput.value.trim()); messageInput.value=""; };
+
+// --- Load Chat ---
+function loadChat(){
+  const recipient=recipientInput.value.trim();
+  if(!recipient) return;
+  const chatId=[currentUser,recipient].sort().join("_");
+  const messagesRef=ref(db,'privateChats/'+chatId+'/messages');
+  onValue(messagesRef,snapshot=>{
+    chatDiv.innerHTML="";
+    snapshot.forEach(child=>{
+      const msg=child.val();
+      const time=new Date(msg.timestamp).toLocaleTimeString();
+      let html=`<p><strong>${msg.sender}</strong> [${time}]: `;
+      if(msg.text){
+        // Highlight mentions
+        html+=msg.text.replace(/@(\w+)/g,`<strong>@$1</strong>`);
+      }
+      if(msg.imgUrl) html+=`<br><img class="chat-image" src="${msg.imgUrl}">`;
+      html+=`</p>`;
+      chatDiv.innerHTML+=html;
+    });
+    chatDiv.scrollTop=chatDiv.scrollHeight;
+  });
+
+  // Typing indicator
+  const typingRef=ref(db,'privateChats/'+chatId+'/typing');
+  onValue(typingRef,snapshot=>{
+    let typingUsers=[];
+    snapshot.forEach(child=>{
+      if(child.key!==currentUser) typingUsers.push(child.key);
+    });
+    typingIndicator.textContent = typingUsers.length>0 ? `${typingUsers.join(", ")} is typing...` : "";
+  });
+}
+
+// --- Image Upload ---
+cameraBtn.onclick=()=>imageInput.click();
+imageInput.onchange=async(e)=>{
+  const file=e.target.files[0]; if(!file) return;
+  const recipient=recipientInput.value.trim();
+  const storageRef=sref(storage,'chatImages/'+Date.now()+'_'+file.name);
+  await uploadBytes(storageRef,file);
+  const url=await getDownloadURL(storageRef);
+  sendMessage('',url);
+  imageInput.value="";
+};
+
+// --- Recipient change ---
+recipientInput.addEventListener("change",loadChat);
+recipientInput.addEventListener("input",loadChat);
+
+// --- Particles (same as before) ---
+const canvas=document.getElementById("particles"); const ctx=canvas.getContext("2d"); let particles=[];
+function resizeCanvas(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+window.addEventListener("resize",resizeCanvas); resizeCanvas();
+function createParticles(){ particles=[]; for(let i=0;i<100;i++){ particles.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, size:Math.random()*3+1, speed:Math.random()*0.2+0.1}); } }
+createParticles();
+function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); if(particlesEnabled){ particles.forEach(p=>{ p.y-=p.speed*particleSpeed; if(p.y<0) p.y=canvas.height; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fillStyle="rgba(255,255,255,0.4)"; ctx.fill(); }); } requestAnimationFrame(animate); }
+animate();
+</script>
+</body>
+</html>
