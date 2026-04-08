@@ -111,7 +111,7 @@ input:focus{width:100%;}
 #chatUI{display:none;flex-direction:column;gap:15px;width:90%;max-width:600px;}
 #onlineBox{background:rgba(255,255,255,0.15);backdrop-filter:blur(15px);border-radius:15px;padding:10px;color:#fff;max-height:150px;overflow-y:auto;}
 #chat{background:rgba(255,255,255,0.1);backdrop-filter:blur(15px);border-radius:15px;padding:10px;height:300px;overflow-y:scroll;color:#fff;width:100%;}
-#message-container{position:relative;width:100%;display:flex;align-items:center;gap:10px;}
+#message-container{position:relative;width:100%;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 #message{flex:1;padding:12px 12px 12px 60px;border-radius:12px;border:none;outline:none;background:rgba(255,255,255,0.2);color:#fff;font-size:16px;backdrop-filter:blur(5px);transition:all 0.3s ease;}
 #cameraBtn{
   position:absolute;
@@ -186,7 +186,7 @@ img.chat-image{max-width:100%;border-radius:15px;margin:5px 0;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, push, onValue, get, set, remove, onDisconnect, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, push, onValue, get, set, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 import { getStorage, ref as sref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
 const firebaseConfig={apiKey:"AIzaSyD4i1bs9ocomiyvV3RZSdQ8OcgtJwAqINo",authDomain:"arkerderacker-chat.firebaseapp.com",databaseURL:"https://arkerderacker-chat-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"arkerderacker-chat",storageBucket:"arkerderacker-chat.appspot.com",messagingSenderId:"664100165039",appId:"1:664100165039:web:804c5ddf7b7af7dab18b5a",measurementId:"G-3WWDCRL1TY"};
@@ -224,6 +224,10 @@ let particlesEnabled=true;
 let particleSpeed=1;
 let currentAbout="Arkerderacker Chat\nVersion 1.0\n© 2026";
 let typingTimeout;
+
+// --- Local Storage ---
+if(localStorage.getItem("particleSpeed")) particleSpeed=parseFloat(localStorage.getItem("particleSpeed"));
+if(localStorage.getItem("particlesEnabled")) particlesEnabled=(localStorage.getItem("particlesEnabled")==="true");
 
 // --- Login/Register ---
 registerBtn.onclick=async()=>{
@@ -300,6 +304,7 @@ sendBtn.onclick=()=>{ sendMessage(messageInput.value.trim()); messageInput.value
 function loadChat(){
   const recipient=recipientInput.value.trim();
   if(!recipient) return;
+  localStorage.setItem("lastRecipient",recipient);
   const chatId=[currentUser,recipient].sort().join("_");
   const messagesRef=ref(db,'privateChats/'+chatId+'/messages');
   onValue(messagesRef,snapshot=>{
@@ -309,7 +314,6 @@ function loadChat(){
       const time=new Date(msg.timestamp).toLocaleTimeString();
       let html=`<p><strong>${msg.sender}</strong> [${time}]: `;
       if(msg.text){
-        // Highlight mentions
         html+=msg.text.replace(/@(\w+)/g,`<strong>@$1</strong>`);
       }
       if(msg.imgUrl) html+=`<br><img class="chat-image" src="${msg.imgUrl}">`;
@@ -346,7 +350,20 @@ imageInput.onchange=async(e)=>{
 recipientInput.addEventListener("change",loadChat);
 recipientInput.addEventListener("input",loadChat);
 
-// --- Particles (same as before) ---
+// --- Settings ---
+settingsBtn.onclick=()=>settingsModal.style.display="flex";
+closeSettingsBtn.onclick=()=>settingsModal.style.display="none";
+speedSlider.value=particleSpeed;
+speedSlider.oninput=()=>{
+  particleSpeed=parseFloat(speedSlider.value);
+  localStorage.setItem("particleSpeed",particleSpeed);
+};
+toggleParticlesBtn.onclick=()=>{
+  particlesEnabled=!particlesEnabled;
+  localStorage.setItem("particlesEnabled",particlesEnabled);
+};
+
+// --- Particles ---
 const canvas=document.getElementById("particles"); const ctx=canvas.getContext("2d"); let particles=[];
 function resizeCanvas(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
 window.addEventListener("resize",resizeCanvas); resizeCanvas();
@@ -354,6 +371,13 @@ function createParticles(){ particles=[]; for(let i=0;i<100;i++){ particles.push
 createParticles();
 function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); if(particlesEnabled){ particles.forEach(p=>{ p.y-=p.speed*particleSpeed; if(p.y<0) p.y=canvas.height; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fillStyle="rgba(255,255,255,0.4)"; ctx.fill(); }); } requestAnimationFrame(animate); }
 animate();
+
+// --- Load last recipient ---
+window.addEventListener("load",()=>{
+  const savedUser=localStorage.getItem("currentUser");
+  if(savedUser){ currentUser=savedUser; loginForm.style.display="none"; chatUI.style.display="flex"; userInfo.textContent=`Logged in as: ${currentUser}`; setOnline(); loadOnlineUsers(); }
+  const lastRecipient=localStorage.getItem("lastRecipient");
+  if(lastRecipient) { recipientInput.value=lastRecipient; loadChat(); }
+});
 </script>
-</body>
-</html>
+</body
