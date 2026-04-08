@@ -8,137 +8,32 @@
 <meta name="apple-mobile-web-app-title" content="Arkerderacker Chat">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
-body {
-  margin:0;
-  height:100vh;
-  overflow:hidden;
-  font-family:Arial, sans-serif;
-  background:linear-gradient(135deg,#1e1e2f,#3a3a5f);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  position:relative;
-}
-#particles{
-  position:absolute;
-  top:0; left:0;
-  width:100%; height:100%;
-  z-index:0;
-}
-.glass{
-  position:relative;
-  z-index:1;
-  background:rgba(255,255,255,0.1);
-  backdrop-filter:blur(15px);
-  -webkit-backdrop-filter:blur(15px);
-  border-radius:25px;
-  box-shadow:0 8px 32px rgba(0,0,0,0.25);
-  padding:30px;
-  min-width:350px;
-  color:#fff;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:15px;
-}
-input{
-  width:80%;
-  padding:12px 12px 12px 50px;
-  border-radius:12px;
-  border:none;
-  outline:none;
-  background:rgba(255,255,255,0.2);
-  color:#fff;
-  font-size:16px;
-  text-align:left;
-  backdrop-filter:blur(5px);
-  transition:all 0.3s ease;
-}
+body { margin:0; height:100vh; overflow:hidden; font-family:Arial, sans-serif; background:linear-gradient(135deg,#1e1e2f,#3a3a5f); display:flex; justify-content:center; align-items:center; position:relative;}
+#particles{position:absolute; top:0; left:0; width:100%; height:100%; z-index:0;}
+.glass{position:relative; z-index:1; background:rgba(255,255,255,0.1); backdrop-filter:blur(15px); border-radius:25px; box-shadow:0 8px 32px rgba(0,0,0,0.25); padding:30px; min-width:350px; color:#fff; display:flex; flex-direction:column; align-items:center; gap:15px;}
+input{width:80%; padding:12px 12px 12px 50px; border-radius:12px; border:none; outline:none; background:rgba(255,255,255,0.2); color:#fff; font-size:16px; text-align:left; backdrop-filter:blur(5px); transition:all 0.3s ease;}
 input:focus{width:100%;}
 .button-row{display:flex;gap:10px;justify-content:center;width:100%;}
-.glass-btn{
-  position:relative;
-  padding:12px 30px;
-  font-size:16px;
-  font-weight:bold;
-  color:white;
-  border:none;
-  border-radius:25px;
-  cursor:pointer;
-  outline:none;
-  background:rgba(255,255,255,0.1);
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,0.2);
-  box-shadow:0 10px 30px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.3);
-  overflow:hidden;
-  transition:all 0.25s ease;
-  margin:0 5px;
-}
-.glass-btn::before{
-  content:"";
-  position:absolute;
-  top:-50%;
-  left:-50%;
-  width:200%;
-  height:200%;
-  background:linear-gradient(60deg, rgba(255,255,255,0.3), rgba(255,255,255,0));
-  transform:rotate(25deg);
-  pointer-events:none;
-  opacity:0.6;
-  transition:all 0.3s ease;
-}
+.glass-btn{position:relative; padding:12px 30px; font-size:16px; font-weight:bold; color:white; border:none; border-radius:25px; cursor:pointer; outline:none; background:rgba(255,255,255,0.1); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.2); box-shadow:0 10px 30px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.3); overflow:hidden; transition:all 0.25s ease;}
 .glass-btn:hover{transform:translateY(-3px) scale(1.05);}
 .glass-btn:active{transform:scale(0.92);}
-.water{
-  position:absolute;
-  top:50%;
-  left:50%;
-  width:200%;
-  height:200%;
-  background:rgba(255,255,255,0.15);
-  border-radius:40%;
-  transform:translate(-50%,-50%) scale(0);
-  pointer-events:none;
-  animation:ripple 1s ease-out forwards;
-}
-@keyframes ripple{
-  0%{transform:translate(-50%,-50%) scale(0);opacity:0.6;}
-  50%{transform:translate(-50%,-50%) scale(1);opacity:0.4;}
-  100%{transform:translate(-50%,-50%) scale(1.5);opacity:0;}
-}
+.water{position:absolute; top:50%; left:50%; width:200%; height:200%; background:rgba(255,255,255,0.15); border-radius:40%; transform:translate(-50%,-50%) scale(0); pointer-events:none; animation:ripple 1s ease-out forwards;}
+@keyframes ripple{0%{transform:translate(-50%,-50%) scale(0);opacity:0.6;}50%{transform:translate(-50%,-50%) scale(1);opacity:0.4;}100%{transform:translate(-50%,-50%) scale(1.5);opacity:0;}}
 #loginForm{transform:translateY(-30px);}
 #chatUI{display:none;flex-direction:column;gap:15px;width:90%;max-width:600px;}
-#onlineBox{background:rgba(255,255,255,0.15);backdrop-filter:blur(15px);border-radius:15px;padding:10px;color:#fff;max-height:150px;overflow-y:auto;}
+#onlineBox{background:rgba(255,255,255,0.15);backdrop-filter:blur(15px);border-radius:15px;padding:10px;color:#fff;max-height:150px;overflow-y:auto;width:100%;}
 #chat{background:rgba(255,255,255,0.1);backdrop-filter:blur(15px);border-radius:15px;padding:10px;height:300px;overflow-y:scroll;color:#fff;width:100%;}
 #message-container{position:relative;width:100%;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 #message{flex:1;padding:12px 12px 12px 60px;border-radius:12px;border:none;outline:none;background:rgba(255,255,255,0.2);color:#fff;font-size:16px;backdrop-filter:blur(5px);transition:all 0.3s ease;}
-#cameraBtn{
-  position:absolute;
-  left:10px;
-  top:50%;
-  transform:translateY(-50%);
-  background:rgba(255,255,255,0.15);
-  border:none;
-  color:#fff;
-  font-size:20px;
-  cursor:pointer;
-  z-index:2;
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  backdrop-filter:blur(10px);
-}
+#cameraBtn{position:absolute; left:10px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.15); border:none; color:#fff; font-size:20px; cursor:pointer; z-index:2; width:36px; height:36px; border-radius:50%; display:flex; justify-content:center; align-items:center; backdrop-filter:blur(10px);}
 #settingsModal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:none;flex-direction:column;align-items:center;padding:20px;background:rgba(255,255,255,0.2);backdrop-filter:blur(25px);border-radius:25px;z-index:10;min-width:300px;}
 #settingsModal input[type=range]{width:80%;}
 #settingsModal button{margin-top:10px;}
 #settingsModal .edit-about{display:none;}
-#aboutText{white-space:pre-line;text-align:center;margin-top:10px;}
+#aboutText{white-space:pre-line;text-align:center;margin-top:10px; cursor:text;}
 #typingIndicator{font-style:italic;color:#ccc;margin-bottom:5px;}
 img.chat-image{max-width:100%;border-radius:15px;margin:5px 0;}
+#usersDropdown{width:100%; padding:10px; border-radius:12px; background:rgba(255,255,255,0.2); color:#fff; border:none; outline:none; cursor:pointer;}
 </style>
 </head>
 <body>
@@ -159,6 +54,11 @@ img.chat-image{max-width:100%;border-radius:15px;margin:5px 0;}
   <div class="button-row">
     <button class="glass-btn" id="settingsBtn">Settings ⚙️</button>
   </div>
+
+  <select id="usersDropdown">
+    <option value="">Select a user to copy</option>
+  </select>
+
   <div id="onlineBox"><strong>Online Users:</strong><div id="onlineList"></div></div>
   <div id="userInfo"></div>
   <div id="typingIndicator"></div>
@@ -194,6 +94,13 @@ const app=initializeApp(firebaseConfig);
 const db=getDatabase(app);
 const storage=getStorage(app);
 
+let currentUser=null;
+let particlesEnabled=true;
+let particleSpeed=1;
+let currentAbout="Arkerderacker Chat\nVersion 1.0\n© 2026";
+let typingTimeout;
+
+// Elements
 const usernameInput=document.getElementById("usernameInput");
 const passwordInput=document.getElementById("passwordInput");
 const registerBtn=document.getElementById("registerBtn");
@@ -208,176 +115,84 @@ const recipientInput=document.getElementById("recipientInput");
 const sendBtn=document.getElementById("sendBtn");
 const logoutBtn=document.getElementById("logoutBtn");
 const onlineList=document.getElementById("onlineList");
-const typingIndicator=document.getElementById("typingIndicator");
+const usersDropdown=document.getElementById("usersDropdown");
+const aboutText=document.getElementById("aboutText");
 const settingsBtn=document.getElementById("settingsBtn");
 const settingsModal=document.getElementById("settingsModal");
 const closeSettingsBtn=document.getElementById("closeSettingsBtn");
 const speedSlider=document.getElementById("speedSlider");
 const toggleParticlesBtn=document.getElementById("toggleParticlesBtn");
-const aboutText=document.getElementById("aboutText");
 const editAboutBtn=document.getElementById("editAboutBtn");
 const cameraBtn=document.getElementById("cameraBtn");
 const imageInput=document.getElementById("imageInput");
 
-let currentUser=null;
-let particlesEnabled=true;
-let particleSpeed=1;
-let currentAbout="Arkerderacker Chat\nVersion 1.0\n© 2026";
-let typingTimeout;
-
-// --- Local Storage ---
+// --- Local storage ---
 if(localStorage.getItem("particleSpeed")) particleSpeed=parseFloat(localStorage.getItem("particleSpeed"));
 if(localStorage.getItem("particlesEnabled")) particlesEnabled=(localStorage.getItem("particlesEnabled")==="true");
 
-// --- Login/Register ---
+// --- Register/Login ---
 registerBtn.onclick=async()=>{
-  const username=usernameInput.value.trim();
-  const password=passwordInput.value.trim();
-  if(!username||!password){ loginMsg.textContent="Enter username and password!"; return; }
-  const userRef=ref(db,'users/'+username);
-  const snapshot=await get(userRef);
-  if(snapshot.exists()){ loginMsg.textContent="Username already taken!"; return; }
-  await set(userRef,{password});
-  loginMsg.style.color="green"; loginMsg.textContent="Registered!";
+  const u=usernameInput.value.trim(); const p=passwordInput.value.trim();
+  if(!u||!p){ loginMsg.textContent="Enter username/password"; return; }
+  const userRef=ref(db,'users/'+u); const snap=await get(userRef);
+  if(snap.exists()){ loginMsg.textContent="Username taken"; return; }
+  await set(userRef,{password:p}); loginMsg.style.color="green"; loginMsg.textContent="Registered!";
 };
 
 loginBtn.onclick=async()=>{
-  const username=usernameInput.value.trim();
-  const password=passwordInput.value.trim();
-  if(!username||!password){ loginMsg.textContent="Enter username and password!"; return; }
-  const userRef=ref(db,'users/'+username);
-  const snapshot=await get(userRef);
-  if(!snapshot.exists()){ loginMsg.textContent="Username does not exist!"; return; }
-  if(password!==snapshot.val().password){ loginMsg.textContent="Incorrect password!"; return; }
-  currentUser=username;
-  localStorage.setItem("currentUser",currentUser);
-  loginForm.style.display="none"; chatUI.style.display="flex";
-  userInfo.textContent=`Logged in as: ${currentUser}`;
-  setOnline();
-  loadOnlineUsers();
+  const u=usernameInput.value.trim(); const p=passwordInput.value.trim();
+  if(!u||!p){ loginMsg.textContent="Enter username/password"; return; }
+  const userRef=ref(db,'users/'+u); const snap=await get(userRef);
+  if(!snap.exists()){ loginMsg.textContent="Username does not exist"; return; }
+  if(snap.val().password!==p){ loginMsg.textContent="Wrong password"; return; }
+  currentUser=u; localStorage.setItem("currentUser",currentUser);
+  loginForm.style.display="none"; chatUI.style.display="flex"; userInfo.textContent=`Logged in as: ${currentUser}`;
+  setOnline(); loadOnlineUsers(); loadAllUsers(); loadAbout();
 };
 
 // --- Online Users ---
-function setOnline(){
-  const onlineRef=ref(db,'onlineUsers/'+currentUser);
-  set(onlineRef,true);
-  onDisconnect(onlineRef).remove();
-}
-function loadOnlineUsers(){
-  onValue(ref(db,'onlineUsers'),snapshot=>{
-    onlineList.innerHTML="";
-    snapshot.forEach(child=>{
-      if(child.key!==currentUser) onlineList.innerHTML+=`<p>${child.key}</p>`;
-    });
-  });
-}
+function setOnline(){ const r=ref(db,'onlineUsers/'+currentUser); set(r,true); onDisconnect(r).remove(); }
+function loadOnlineUsers(){ onValue(ref(db,'onlineUsers'),snap=>{ onlineList.innerHTML=""; snap.forEach(c=>{ if(c.key!==currentUser) onlineList.innerHTML+=`<p>${c.key}</p>`; }); }); }
+
+// --- All Users Dropdown ---
+async function loadAllUsers(){ const snap=await get(ref(db,'users')); usersDropdown.innerHTML='<option value="">Select a user to copy</option>'; snap.forEach(c=>{ const opt=document.createElement("option"); opt.value=c.key; opt.textContent=c.key; usersDropdown.appendChild(opt); }); }
+usersDropdown.addEventListener("change",()=>{ if(usersDropdown.value) recipientInput.value=usersDropdown.value; });
+
+// --- About in Settings ---
+function loadAbout(){ onValue(ref(db,'about'),snap=>{ if(snap.exists()) currentAbout=snap.val(); aboutText.textContent=currentAbout; if(currentUser==="Markus") editAboutBtn.style.display="block"; else editAboutBtn.style.display="none"; }); }
+editAboutBtn.onclick=async()=>{ const txt=prompt("Edit About",currentAbout); if(txt) await set(ref(db,'about'),txt); };
 
 // --- Logout ---
-logoutBtn.onclick=()=>{
-  if(currentUser) remove(ref(db,'onlineUsers/'+currentUser));
-  currentUser=null; localStorage.removeItem("currentUser");
-  loginForm.style.display="flex"; chatUI.style.display="none";
-  chatDiv.innerHTML=""; recipientInput.value=""; messageInput.value="";
-};
+logoutBtn.onclick=()=>{ remove(ref(db,'onlineUsers/'+currentUser)); currentUser=null; localStorage.removeItem("currentUser"); loginForm.style.display="flex"; chatUI.style.display="none"; chatDiv.innerHTML=""; recipientInput.value=""; messageInput.value=""; };
 
 // --- Typing Indicator ---
-messageInput.addEventListener("input",()=>{
-  if(!currentUser || !recipientInput.value.trim()) return;
-  const chatId=[currentUser,recipientInput.value.trim()].sort().join("_");
-  const typingRef=ref(db,'privateChats/'+chatId+'/typing/'+currentUser);
-  set(typingRef,true);
-  clearTimeout(typingTimeout);
-  typingTimeout=setTimeout(()=>remove(typingRef),1000);
-});
+messageInput.addEventListener("input",()=>{ if(!currentUser||!recipientInput.value.trim()) return; const chatId=[currentUser,recipientInput.value.trim()].sort().join("_"); const r=ref(db,'privateChats/'+chatId+'/typing/'+currentUser); set(r,true); clearTimeout(typingTimeout); typingTimeout=setTimeout(()=>remove(r),1000); });
 
 // --- Send Message ---
-async function sendMessage(text,imgUrl){
-  const recipient=recipientInput.value.trim();
-  if(!currentUser || !recipient || (!text && !imgUrl)) return;
-  const chatId=[currentUser,recipient].sort().join("_");
-  const msgRef=ref(db,'privateChats/'+chatId+'/messages');
-  await push(msgRef,{sender:currentUser,timestamp:Date.now(),text:text||'',imgUrl:imgUrl||''});
-}
+async function sendMessage(text,imgUrl){ const recipient=recipientInput.value.trim(); if(!currentUser||!recipient||(!text&&!imgUrl)) return; const chatId=[currentUser,recipient].sort().join("_"); await push(ref(db,'privateChats/'+chatId+'/messages'),{sender:currentUser,timestamp:Date.now(),text:text||'',imgUrl:imgUrl||''}); }
 sendBtn.onclick=()=>{ sendMessage(messageInput.value.trim()); messageInput.value=""; };
 
 // --- Load Chat ---
-function loadChat(){
-  const recipient=recipientInput.value.trim();
-  if(!recipient) return;
-  localStorage.setItem("lastRecipient",recipient);
-  const chatId=[currentUser,recipient].sort().join("_");
-  const messagesRef=ref(db,'privateChats/'+chatId+'/messages');
-  onValue(messagesRef,snapshot=>{
-    chatDiv.innerHTML="";
-    snapshot.forEach(child=>{
-      const msg=child.val();
-      const time=new Date(msg.timestamp).toLocaleTimeString();
-      let html=`<p><strong>${msg.sender}</strong> [${time}]: `;
-      if(msg.text){
-        html+=msg.text.replace(/@(\w+)/g,`<strong>@$1</strong>`);
-      }
-      if(msg.imgUrl) html+=`<br><img class="chat-image" src="${msg.imgUrl}">`;
-      html+=`</p>`;
-      chatDiv.innerHTML+=html;
-    });
-    chatDiv.scrollTop=chatDiv.scrollHeight;
-  });
-
-  // Typing indicator
-  const typingRef=ref(db,'privateChats/'+chatId+'/typing');
-  onValue(typingRef,snapshot=>{
-    let typingUsers=[];
-    snapshot.forEach(child=>{
-      if(child.key!==currentUser) typingUsers.push(child.key);
-    });
-    typingIndicator.textContent = typingUsers.length>0 ? `${typingUsers.join(", ")} is typing...` : "";
-  });
-}
+function loadChat(){ const r=recipientInput.value.trim(); if(!r) return; localStorage.setItem("lastRecipient",r); const chatId=[currentUser,r].sort().join("_"); onValue(ref(db,'privateChats/'+chatId+'/messages'),snap=>{ chatDiv.innerHTML=""; snap.forEach(c=>{ const m=c.val(); const time=new Date(m.timestamp).toLocaleTimeString(); let html=`<p><strong>${m.sender}</strong> [${time}]: ${m.text?m.text.replace(/@(\w+)/g,'<strong>@$1</strong>'):""}`; if(m.imgUrl) html+=`<br><img class="chat-image" src="${m.imgUrl}">`; html+="</p>"; chatDiv.innerHTML+=html; }); chatDiv.scrollTop=chatDiv.scrollHeight; }); onValue(ref(db,'privateChats/'+chatId+'/typing'),snap=>{ let typing=[]; snap.forEach(c=>{ if(c.key!==currentUser) typing.push(c.key); }); document.getElementById("typingIndicator").textContent=typing.length>0?`${typing.join(", ")} is typing...`:""; }); }
+recipientInput.addEventListener("change",loadChat); recipientInput.addEventListener("input",loadChat);
 
 // --- Image Upload ---
 cameraBtn.onclick=()=>imageInput.click();
-imageInput.onchange=async(e)=>{
-  const file=e.target.files[0]; if(!file) return;
-  const recipient=recipientInput.value.trim();
-  const storageRef=sref(storage,'chatImages/'+Date.now()+'_'+file.name);
-  await uploadBytes(storageRef,file);
-  const url=await getDownloadURL(storageRef);
-  sendMessage('',url);
-  imageInput.value="";
-};
-
-// --- Recipient change ---
-recipientInput.addEventListener("change",loadChat);
-recipientInput.addEventListener("input",loadChat);
+imageInput.onchange=async(e)=>{ const f=e.target.files[0]; if(!f) return; const r=recipientInput.value.trim(); const s=sref(storage,'chatImages/'+Date.now()+'_'+f.name); await uploadBytes(s,f); const url=await getDownloadURL(s); sendMessage('',url); imageInput.value=""; };
 
 // --- Settings ---
-settingsBtn.onclick=()=>settingsModal.style.display="flex";
-closeSettingsBtn.onclick=()=>settingsModal.style.display="none";
-speedSlider.value=particleSpeed;
-speedSlider.oninput=()=>{
-  particleSpeed=parseFloat(speedSlider.value);
-  localStorage.setItem("particleSpeed",particleSpeed);
-};
-toggleParticlesBtn.onclick=()=>{
-  particlesEnabled=!particlesEnabled;
-  localStorage.setItem("particlesEnabled",particlesEnabled);
-};
+settingsBtn.onclick=()=>settingsModal.style.display="flex"; closeSettingsBtn.onclick=()=>settingsModal.style.display="none";
+speedSlider.value=particleSpeed; speedSlider.oninput=()=>{ particleSpeed=parseFloat(speedSlider.value); localStorage.setItem("particleSpeed",particleSpeed); };
+toggleParticlesBtn.onclick=()=>{ particlesEnabled=!particlesEnabled; localStorage.setItem("particlesEnabled",particlesEnabled); };
 
 // --- Particles ---
-const canvas=document.getElementById("particles"); const ctx=canvas.getContext("2d"); let particles=[];
-function resizeCanvas(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
-window.addEventListener("resize",resizeCanvas); resizeCanvas();
-function createParticles(){ particles=[]; for(let i=0;i<100;i++){ particles.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, size:Math.random()*3+1, speed:Math.random()*0.2+0.1}); } }
-createParticles();
-function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); if(particlesEnabled){ particles.forEach(p=>{ p.y-=p.speed*particleSpeed; if(p.y<0) p.y=canvas.height; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fillStyle="rgba(255,255,255,0.4)"; ctx.fill(); }); } requestAnimationFrame(animate); }
-animate();
+const canvas=document.getElementById("particles"),ctx=canvas.getContext("2d"); let particles=[];
+function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; } window.addEventListener("resize",resize); resize();
+function createParticles(){ particles=[]; for(let i=0;i<100;i++) particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*3+1,speed:Math.random()*0.2+0.1}); } createParticles();
+function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); if(particlesEnabled){ particles.forEach(p=>{ p.y-=p.speed*particleSpeed; if(p.y<0)p.y=canvas.height; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,2*Math.PI); ctx.fillStyle="rgba(255,255,255,0.4)"; ctx.fill(); }); } requestAnimationFrame(animate); } animate();
 
-// --- Load last recipient ---
-window.addEventListener("load",()=>{
-  const savedUser=localStorage.getItem("currentUser");
-  if(savedUser){ currentUser=savedUser; loginForm.style.display="none"; chatUI.style.display="flex"; userInfo.textContent=`Logged in as: ${currentUser}`; setOnline(); loadOnlineUsers(); }
-  const lastRecipient=localStorage.getItem("lastRecipient");
-  if(lastRecipient) { recipientInput.value=lastRecipient; loadChat(); }
-});
+// --- Load previous session ---
+window.addEventListener("load",()=>{ const saved=localStorage.getItem("currentUser"); if(saved){ currentUser=saved; loginForm.style.display="none"; chatUI.style.display="flex"; userInfo.textContent=`Logged in as: ${currentUser}`; setOnline(); loadOnlineUsers(); loadAllUsers(); loadAbout(); } const lastRecipient=localStorage.getItem("lastRecipient"); if(lastRecipient){ recipientInput.value=lastRecipient; loadChat(); } });
 </script>
-</body
+</body>
+</html>
